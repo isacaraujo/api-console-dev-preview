@@ -1,0 +1,48 @@
+{
+  "name": "api-console-dev-preview",
+  "version": "0.1.0",
+  "description": "A npm module to generate API console dev version from RAML files and update RAML data every time the sources change.",
+  "main": "main.js",
+  "scripts": {
+    "test": "mocha 'test/*.test.js'"
+  },
+  "engines": {
+    "node": ">=6.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mulesoft-labs/api-console-dev-preview.git"
+  },
+  "keywords": [
+    "api-console",
+    "builder",
+    "node",
+    "bower",
+    "dependencies"
+  ],
+  "author": "Pawel Psztyc, Advanced Rest Client Authors",
+  "license": "Apache-2.0 or CC-BY-4.0",
+  "bugs": {
+    "url": "https://github.com/mulesoft-labs/api-console-dev-preview/issues"
+  },
+  "homepage": "https://github.com/mulesoft-labs/api-console-dev-preview#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "api-console-builder-templates": "^0.1.0",
+    "api-console-dependency-manager": "^0.1.0",
+    "api-console-github-resolver": "^0.1.0",
+    "api-console-sources-resolver": "^0.1.0",
+    "babel-core": "^6.25.0",
+    "babel-preset-env": "^1.6.0",
+    "fs-extra": "^3.0.0",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "parse5": "^3.0.2",
+    "polyserve": "^0.20.0",
+    "raml-json-enhance-node": "^0.2.0",
+    "winston": "^2.3.1",
+    "ws": "^3.1.0"
+  }
+}

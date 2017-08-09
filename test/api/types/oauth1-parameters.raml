@@ -1,0 +1,71 @@
+#%RAML 1.0 DataType
+
+usage: |
+  It should be used whenever OAuth parameters are required for either query
+  parameters or the body.
+
+description: |
+  A list of OAuth 1 query parameters. It can be used in query parameters
+  or in a body. If used with a body then - per OAuth1 specification - it must be
+  transmited as `application/x-www-form-urlencoded`.
+
+  The parameters can also be used in the authorization header as per OAuth spec.
+
+  This type definition is meant to be used during the authoization process
+  and not to request protected resouce (unless using query parameters for that).
+
+type: object
+properties:
+  oauth_signature_method:
+    description: |
+      A method used to generate the signature.
+      Per specification this parameters is always required.
+    displayName: Signature method
+    enum: [PLAINTEXT, HMAC-SHA1]
+    default: HMAC-SHA1
+  oauth_consumer_key:
+    type: string
+    displayName: Consumer key
+    description: |
+      A consumer key used to generate the signature. This infomration
+      is required by the authorization server.
+  oauth_signature:
+    type: string
+    description: |
+      Generated signature. The request is invalid without properly generated
+      signature.
+    displayName: Signature
+  oauth_token:
+    type: string
+    displayName: Token
+    required: false
+    description: |
+      A token used to generate the signature. If this is a request for temporary
+      token then this should not be set.
+  oauth_callback:
+    type: string
+    required: false
+    description: |
+      A callback URL used with OAuth parameters.
+      Setting callback is not required and after authozation the user will see
+      generated token and token secret which can be used later in authorization
+      process. If callback URL is set, then the user will be redirected to
+      this URL with OAuth 1 authorization result parameters as defined in
+      OAuth 1 specification.
+    displayName: Callback it works!
+  oauth_nonce:
+    type: string
+    description: OAuth 1 nonce used to generate the signature.
+    displayName: Nonce
+  oauth_timestamp:
+    type: number
+    description: Timestamp of generating the signatire
+    required: false
+    displayName: Timestamp
+  oauth_version:
+    type: number
+    required: false
+    default: 1.0
+    description: |
+      This should be set only if it was used to generate the signature.
+    displayName: Version

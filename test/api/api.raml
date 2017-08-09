@@ -1,0 +1,295 @@
+#%RAML 1.0
+title: Advanced REST Client Echo service API
+version: v1
+baseUri: https://echo.advancedrestclient.com/
+mediaType: [application/json]
+
+traits:
+  RequestResponse:
+    responses:
+      200:
+        body:
+          application/json:
+            description: |
+              Successful response returns request data as a JSON object.
+            type: RequestDataResponse
+types:
+  BaseResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Wherther or not the operation succeeded.
+  AuthorizationResponse:
+    type: BaseResponse
+    properties:
+      authorized:
+        type: boolean
+        description: Wherther or not the user is authenticated.
+  OAuth1Parameters: !include types/oauth1-parameters.raml
+  CookieList: !include types/cookies-list.raml
+  RequestDataResponse: !include types/request-data-response.raml
+  HeadersDataResponse: !include types/headers-data-response.raml
+  CookieListResponse: [BaseResponse, CookieList]
+
+securitySchemes:
+  basic:
+    type: Basic Authentication
+    description: Basic authorization.
+
+/auth:
+  description: |
+    An endpoint to test different authorization methods.
+
+    It provides endpoint to test common authorization methods like basic, NTLM, OAuth 1.
+
+    **Disclosure**: The application (server) do not stores any data in any way (permament store, cache, logs).
+    For query parameters some information may be stored in server logs. Application nor the Owner are not using this information
+    in any way, and this information is considered confidential.
+  /basic/{username}/{password}:
+    securedBy: basic
+    description: |
+      Simulates a basic authorization by sending `www-authenticate` header to browser with `Basic` and realm values.
+      The `username` and `password` are set as URI parameters
+    uriParameters:
+      username:
+        type: string
+        default: user
+        description: |
+          The username to use to chanlenge the user.
+          By default it is `user`. This parameter may be ommited but also `password` should be omnited.
+        example: auth-user
+        required: false
+      password:
+        type: string
+        default: passwd
+        description: |
+          The password to use to chanlenge the user.
+          By default it is `passwd`. This parameter may be ommited.
+        example: my!Passw0rd
+        required: false
+    get:
+      description: |
+        Challenges the user with Basic authorization.
+        By default the `username` is `user` and `password` is `passwd`.
+      headers:
+        Authorization:
+          description: Basic authorization header. If not set then it will chalange the user for username and password.
+          required: false
+          pattern: Basic\s[a-zA-Z0-9=]+
+          example: Basic dGVzdDp0ZXN0
+      responses:
+        401:
+          description: |
+            Returned when authorization token is not set or is containing wrong
+            token data.
+          headers:
+            WWW-Authenticate:
+              description: Authorization chalenge header.
+        200:
+          description: |
+            The user has been successfully authenticated.
+          body:
+            application/json:
+              type: AuthorizationResponse
+  /oauth1:
+    description: |
+      Simulates the OAuth 1 authorization server endpoints.
+    /request_token:
+      description: |
+        An endpoint to get a temporaty request token that should be used
+        to redirect user to the confirmation dialog.
+      post:
+        description: |
+          Request for temporary request token for OAuth authorization.
+          This request requires valid signature with oauth parameters.
+        body:
+          application/x-www-form-urlencoded:
+            type: OAuth1Parameters
+
+/cookies:
+  description: |
+    An endpoint that simulates cookies behaviors.
+    It can create, list or delete cookies by sending appropriate `set-cookie`
+    header to the client.
+  post:
+    displayName: Create a cookie(s)
+    description: |
+      Creates a cookie by sending `set-cookie` header to the client.
+      A list of cookies to be created is passed in the request body as a
+      list of key-value pairs of cookie name and the value.
+
+      Use `/cookies/set` endpoint if you need to set cookies via `GET`
+      request.
+    body:
+      application/json:
+        type: CookieList
+    responses:
+      200:
+        headers:
+          Set-Cookie:
+            description: A `set-cookie` header  with passed to the server list of cookies.
+        body:
+          type: BaseResponse
+  get:
+    displayName: List cookies
+    description: |
+      Lists cookies received by the server.
+    headers:
+      Cookie:
+        required: false
+        description: Cookies to be read.
+    responses:
+      200:
+        body:
+          type: CookieListResponse
+  delete:
+    displayName: Remove a cookie(s)
+    description: |
+      Removes a cookie by sending `set-cookie` header to the client.
+      A list of cookies to be deleted is passed in the request body as a
+      list of key-value pairs of cookie names and the values.
+
+      You do not need to provide cookie values in the request body as they will
+      be ignored by the server. Prepare a request body as:
+
+      ```
+      {
+        'cookieName': '',
+        'otherCookie': true // whatever value.
+      }
+      ```
+
+      Use `/cookies/delete` endpoint if you need to delete cookies via `GET`
+      request.
+    body:
+      application/json:
+        type: CookieList
+    responses:
+      200:
+        headers:
+          Set-Cookie:
+            description: A `set-cookie` header  with passed to the server list of cookies.
+        body:
+          type: BaseResponse
+  /set:
+    get:
+      displayName: Create cookies
+      description: |
+        Creates a cookie by sending `set-cookie` header to the client.
+        A list of cookies to be created is passed in the request body as a
+        list of key-value pairs of cookie name and the value.
+
+        Use `POST /cookies` endpoint if you can use `POST` request.
+      queryParameters:
+        type: CookieList
+      responses:
+        200:
+          headers:
+            Set-Cookie:
+              description: A `set-cookie` header  with passed to the server list of cookies.
+          body:
+            type: BaseResponse
+  /delete:
+    get:
+      displayName: Remove cookies test
+      description: |
+        Removes a cookie by sending `set-cookie` header to the client.
+        A list of cookies to be deleted is passed in the request body as a
+        list of key-value pairs of cookie names and the values.
+
+        You do not need to provide a cookie value as it will be ignored by the server.
+        The request should be similar to:
+
+        ```
+        DELETE /cookies?cookieName&otherCooke HTTP 1.1
+        ```
+
+        Use `DELETE /cookies` endpoint if you can use `DELETE` request.
+      queryParameters:
+        type: CookieList
+      responses:
+        200:
+          headers:
+            Set-Cookie:
+              description: A `set-cookie` header  with passed to the server list of cookies.
+          body:
+            type: BaseResponse
+/compression:
+  description: |
+    An endpoint to test various compression types.
+  /gzip:
+    get:
+      is: [RequestResponse]
+      description: |
+        Generates a response that is GZipped. It compresses every response,
+        no matter the size of it (by default servers compresses responses
+        above set size).
+  /deflate:
+    get:
+      is: [RequestResponse]
+      description: |
+        Generates a response that is deflatted. It compresses every response,
+        no matter the size of it (by default servers compresses responses
+        above set size).
+/status:
+  description: Tests status codes responses.
+  /{code}:
+    uriParameters:
+      code:
+        type: integer
+        minimum: 200
+        maximum: 599
+        description: |
+          Valid status code, which is >= 200 and <= 599.
+          Other status codes are accepted by the endpoint but in general they
+          are invalid.
+    get:
+      description: |
+        Returns a response for given status `code`.
+        The response doesn't carry any body.
+/headers:
+  description: And endpoint to test HTTP headers
+  get:
+    description: Lists incomming headers from the request.
+    responses:
+      200:
+        body:
+          application/json:
+            type: HeadersDataResponse
+  post:
+    description: Sends headers to the client defined in the request body
+    body:
+      application/json:
+        type: HeadersDataResponse
+
+    responses:
+      200:
+        description: |
+          The response headers list contains headers set in the request
+          payload.
+
+          Note that some headers like `content-length` are alwayws set by the
+          server. The `content-type` header is always `application/json`.
+        body:
+          application/json:
+            type: HeadersDataResponse
+  /set:
+    get:
+      description: Sends headers to the client using `GET` method from query parameters.
+      queryParameters:
+        type: HeadersDataResponse
+      responses:
+        200:
+          description: |
+            The response headers list contains headers set in the request
+            payload.
+
+            Note that some headers like `content-length` are alwayws set by the
+            server. The `content-type` header is always `application/json`.
+          body:
+            application/json:
+              type: HeadersDataResponse
+/hello:
+  get:
+    description: test
