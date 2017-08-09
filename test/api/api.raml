@@ -142,7 +142,8 @@ securitySchemes:
     responses:
       200:
         body:
-          type: CookieListResponse
+          application/json:
+            type: CookieListResponse
   delete:
     displayName: Remove a cookie(s)
     description: |
@@ -245,6 +246,7 @@ securitySchemes:
           Other status codes are accepted by the endpoint but in general they
           are invalid.
     get:
+      displayName: Return any status
       description: |
         Returns a response for given status `code`.
         The response doesn't carry any body.
