@@ -138,7 +138,7 @@ describe('Options', () => {
     });
 
     it('Should set port default option', function() {
-      assert.equal(options.port, 0);
+      assert.isUndefined(options.port);
     });
 
     it('Should set api default option', function() {
