@@ -261,22 +261,26 @@ describe('Dev preview', () => {
     });
   });
 
-  describe('_createDepenencyManagerOptions()', function() {
+  describe('_manageDependencies()', function() {
     this.timeout(30000);
     const options = {
       src: 'test/api-console-master.zip',
       sourceIsZip: true
     };
     var workingDir;
-    before(function() {
+    before(function(done) {
       processor = new ApiConsoleDevPreview(options);
-      return processor._sourcesToWorkingDirectory()
+      processor._sourcesToWorkingDirectory()
       .then(() => {
         workingDir = processor.sourceControl.workingDir;
+        done();
+      })
+      .catch(e => {
+        done(e);
       });
     });
 
-    it('Installs dependencies', function() {
+    it('Installs dependencies', function(done) {
       return processor._manageDependencies()
       .then(() => {
         return fs.pathExists(path.join(workingDir, 'bower_components'));
@@ -286,7 +290,11 @@ describe('Dev preview', () => {
         return fs.pathExists(path.join(workingDir, 'bower_components',
           'api-console', 'api-console.html'));
       })
-      .then(exists => assert.isTrue(exists, 'Copies api-console.html to bower_components'));
+      .then(exists => assert.isTrue(exists, 'Copies api-console.html to bower_components'))
+      .then(() => done())
+      .catch(e => {
+        done(e);
+      });
     });
 
     it('Skips dependencies for noBower option', function() {
@@ -308,12 +316,18 @@ describe('Dev preview', () => {
       noBower: true
     };
     var workingDir;
-    before(function() {
+    before(function(done) {
       processor = new ApiConsoleDevPreview(options);
-      return processor._sourcesToWorkingDirectory()
+      processor._sourcesToWorkingDirectory()
       .then(() => {
         workingDir = processor.sourceControl.workingDir;
         return processor._manageDependencies();
+      })
+      .then(() => {
+        done();
+      })
+      .catch(e => {
+        done(e);
       });
     });
 
