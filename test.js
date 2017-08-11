@@ -7,6 +7,7 @@ const prev = new ApiConsoleDevPreview({
   src: 'test/api-console-installed.zip',
   sourceIsZip: true,
   noBower: true,
-  verbose: true
+  verbose: false,
+  open: true
 });
 prev.run();
