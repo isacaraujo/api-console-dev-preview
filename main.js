@@ -1,7 +1,7 @@
 'use strict';
 
-const {DependendenciesManager} = require('./lib/dependencies.js');
-const {DependenciesOptions} = require('./lib/dependencies-options.js');
+const {ApiConsoleDevPreview} = require('./lib/dev-preview');
+const {PreviewOptions} = require('./lib/preview-options.js');
 
 /**
  * Copyright (C) Mulesoft.
@@ -9,24 +9,5 @@ const {DependenciesOptions} = require('./lib/dependencies-options.js');
  *
  * @author Pawel Psztyc <pawel.psztyc@mulesoft.com>
  */
-
-/**
- * Sorthand function to `DependendenciesManager#installDependencies()`.
- *
- * @param {String} workingDir Path to a working directory instance.
- * @param {Winston} logger Logger to use to log debug output
- * @param {DependenciesOptions} opts Options passed to the module
- * @return {Promise} Resolved promise when operation is completed.
- */
-module.exports.installDependencies = function(workingDir, logger, opts) {
-  const manager = new DependendenciesManager(workingDir, logger, opts);
-  return manager.installDependencies();
-};
-/**
- * A library to install API console dependencies.
- */
-module.exports.DependendenciesManager = DependendenciesManager;
-/**
- * A library to be used to create manager's options object.
- */
-module.exports.DependenciesOptions = DependenciesOptions;
+module.exports.ApiConsoleDevPreview = ApiConsoleDevPreview;
+module.exports.PreviewOptions = PreviewOptions;
