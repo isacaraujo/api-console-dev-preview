@@ -124,13 +124,13 @@ describe('Dev preview', () => {
       assert.isTrue(t1 === t2);
     });
 
-    it('Returns ramlSource', function() {
-      assert.equal(processor.ramlSource.constructor.name, 'RamlSource');
+    it('Returns dataProvider', function() {
+      assert.equal(processor.dataProvider.constructor.name, 'RamlJsDataProvider');
     });
 
-    it('consoleSources is the same object each time called', function() {
-      var t1 = processor.ramlSource;
-      var t2 = processor.ramlSource;
+    it('dataProvider is the same object each time called', function() {
+      var t1 = processor.dataProvider;
+      var t2 = processor.dataProvider;
       assert.isTrue(t1 === t2);
     });
   });
@@ -281,7 +281,7 @@ describe('Dev preview', () => {
     });
 
     it('Installs dependencies', function(done) {
-      return processor._manageDependencies()
+      processor._manageDependencies()
       .then(() => {
         return fs.pathExists(path.join(workingDir, 'bower_components'));
       })
@@ -343,31 +343,6 @@ describe('Dev preview', () => {
       .then(content => {
         let index = content.indexOf('bower_components/api-console/api-console.html');
         assert.isAbove(index, 0, 'Template paths are rewrited');
-      });
-    });
-  });
-
-  describe('_setRaml()', function() {
-    this.timeout(10000);
-    const options = {
-      projectRoot: './test/api/',
-      api: 'api.raml'
-    };
-    before(function() {
-      processor = new ApiConsoleDevPreview(options);
-    });
-
-    it('Produces javascript object from RAML', function() {
-      return processor._setRaml()
-      .then(result => {
-        assert.typeOf(result, 'object');
-      });
-    });
-
-    it('Sets the `raml` property on main object', function() {
-      return processor._setRaml()
-      .then(() => {
-        assert.typeOf(processor.raml, 'object');
       });
     });
   });
