@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "api-console-builder-templates": "^0.1.0",
-    "api-console-dependency-manager": "^0.1.0",
+    "api-console-dependency-manager": "^0.1.1",
     "api-console-github-resolver": "^0.1.0",
     "api-console-sources-resolver": "^0.1.0",
     "babel-core": "^6.25.0",

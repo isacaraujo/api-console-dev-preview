@@ -262,7 +262,7 @@ describe('Dev preview', () => {
   });
 
   describe('_manageDependencies()', function() {
-    this.timeout(30000);
+    this.timeout(300000);
     const options = {
       src: 'test/api-console-master.zip',
       sourceIsZip: true
