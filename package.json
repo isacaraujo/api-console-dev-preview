@@ -1,6 +1,6 @@
 {
   "name": "api-console-dev-preview",
-  "version": "0.1.1",
+  "version": "0.2.0-dev",
   "description": "A npm module to generate API console dev version from RAML files and update RAML data every time the sources change.",
   "main": "main.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "parse5": "^3.0.2",
     "polyserve": "^0.20.0",
     "raml-js-data-provider": "^0.1.0",
-    "raml-json-enhance-node": "^0.2.0",
+    "raml-json-enhance-node": "^0.3.0",
     "winston": "^2.3.1",
     "ws": "^3.1.0"
   },
